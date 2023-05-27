@@ -6,6 +6,8 @@ let width = 15;
 let direction = 1;
 let invadersId;
 let goingRight = true;
+let aliensRemoved = [];
+let results = 0
 
 // create for loop to add 225 squares into grid
 
@@ -25,7 +27,10 @@ const alienInvaders = [
 
 function draw() {
     for(let i = 0; i < alienInvaders.length; i++) {
-        squares[alienInvaders[i]].classList.add('invader')
+        if(!aliensRemoved.includes(i)){
+            squares[alienInvaders[i]].classList.add('invader')
+        }
+        
     }
 }
 
@@ -80,14 +85,19 @@ function moveInvaders() {
     draw()
 
     if (squares[currentShooterIndex].classList.contains('invader', 'shooter')) {
-        resultsDisplay.innerHTML = "Game Over!"
+        resultsDisplay.innerHTML = "GAME OVER!"
         clearInterval(invadersId)
     }
    
     for (let i = 0; i < alienInvaders.length; i++) {
         if (alienInvaders[i] > squares.length) {
-            resultsDisplay.innerHTML = "Game Over!"
+            resultsDisplay.innerHTML = "GAME OVER!"
+            clearInterval(invadersId)
         }
+    }
+    if(aliensRemoved.length === alienInvaders.length) {
+        resultsDisplay.innerHTML = "YOU WIN!"
+        clearInterval(invadersId)
     }
 }
 
@@ -100,7 +110,7 @@ function shoot(e) {
         squares[currentLazerIndex].classList.remove('lazer')
         currentLazerIndex -= width
         squares[currentLazerIndex].classList.add('lazer')
-
+        
         if (squares[currentLazerIndex].classList.contains('invader')) {
             squares[currentLazerIndex].classList.remove('lazer')
             squares[currentLazerIndex].classList.remove('invader')
@@ -109,7 +119,11 @@ function shoot(e) {
             setTimeout(()=> squares[currentLazerIndex].classList.remove('boom'), 300) 
             clearInterval(lazerId)
 
-            const alienRemoval = alienInvaders.indexOf(currentLazerIndex)
+            const alienRemoved = alienInvaders.indexOf(currentLazerIndex)
+            aliensRemoved.push(alienRemoved)
+            results++
+            resultsDisplay.innerHTML = results
+            console.log(aliensRemoved)
         }
         
         }
